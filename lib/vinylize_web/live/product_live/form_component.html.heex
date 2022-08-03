@@ -8,35 +8,35 @@
     phx-target={@myself}
     phx-change="validate"
     phx-submit="save">
-  
+
     <%= label f, :name %>
     <%= text_input f, :name %>
     <%= error_tag f, :name %>
-  
+
     <%= label f, :price %>
     <%= number_input f, :price, step: "any" %>
     <%= error_tag f, :price %>
-  
+
     <%= label f, :sku %>
     <%= number_input f, :sku %>
     <%= error_tag f, :sku %>
-  
+
     <%= label f, :is_seasonal %>
     <%= checkbox f, :is_seasonal %>
     <%= error_tag f, :is_seasonal %>
-  
+
     <%= label f, :image %>
     <%= text_input f, :image %>
     <%= error_tag f, :image %>
-  
+
     <%= label f, :pack_size %>
     <%= number_input f, :pack_size %>
     <%= error_tag f, :pack_size %>
-  
-    <%= label f, :category %>
-    <%= number_input f, :category %>
-    <%= error_tag f, :category %>
-  
+
+    <%= label f, :category_id %>
+    <%= select f, :category_id, Enum.map(@categories, &{&1.name, &1.id}) %>
+    <%= error_tag f, :category_id %>
+
     <div>
       <%= submit "Save", phx_disable_with: "Saving..." %>
     </div>

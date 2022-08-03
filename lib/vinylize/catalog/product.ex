@@ -3,7 +3,6 @@ defmodule Vinylize.Catalog.Product do
   import Ecto.Changeset
 
   schema "products" do
-    field :category, :integer
     field :image, :string
     field :is_seasonal, :boolean, default: false
     field :name, :string
@@ -11,14 +10,16 @@ defmodule Vinylize.Catalog.Product do
     field :price, :float
     field :sku, :integer
 
+    belongs_to :category, Vinylize.Catalog.Category
+
     timestamps()
   end
 
   @doc false
   def changeset(product, attrs) do
     product
-    |> cast(attrs, [:name, :price, :sku, :is_seasonal, :image, :pack_size, :category])
-    |> validate_required([:name, :price, :sku, :is_seasonal, :image, :pack_size, :category])
+    |> cast(attrs, [:name, :price, :sku, :is_seasonal, :image, :pack_size, :category_id])
+    |> validate_required([:name, :price, :sku, :is_seasonal, :image, :pack_size, :category_id])
     |> unique_constraint(:sku)
   end
 end

@@ -6,7 +6,12 @@ defmodule VinylizeWeb.ProductLive.Index do
 
   @impl true
   def mount(_params, _session, socket) do
-    {:ok, assign(socket, :products, list_products())}
+    Catalog.subscribe()
+    changeset = Catalog.change_product(%Product{})
+    products = Catalog.list_products()
+    categories = Catalog.list_alphabetical_categories()
+
+    {:ok, assign(socket, changeset: changeset, products: products, categories: categories)}
   end
 
   @impl true
@@ -38,6 +43,12 @@ defmodule VinylizeWeb.ProductLive.Index do
     {:ok, _} = Catalog.delete_product(product)
 
     {:noreply, assign(socket, :products, list_products())}
+  end
+
+  @impl true
+  def handle_info({Products, [:product | _], _}, socket) do
+    products = Catalog.list_products()
+    {:noreply, assign(socket, products: products)}
   end
 
   defp list_products do

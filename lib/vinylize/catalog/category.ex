@@ -6,6 +6,7 @@ defmodule Vinylize.Catalog.Category do
     field :name, :string
     field :parent_id, :integer
 
+    has_many :products, Vinylize.Catalog.Product
     timestamps()
   end
 

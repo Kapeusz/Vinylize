@@ -8,6 +8,7 @@
       title={@page_title}
       action={@live_action}
       product={@product}
+      categories={@categories}
       return_to={Routes.product_index_path(@socket, :index)}
     />
   </.modal>
@@ -36,7 +37,7 @@
         <td><%= product.is_seasonal %></td>
         <td><%= product.image %></td>
         <td><%= product.pack_size %></td>
-        <td><%= product.category %></td>
+        <td><%= product.category.name %></td>
 
         <td>
           <span><%= live_redirect "Show", to: Routes.product_show_path(@socket, :show, product) %></span>

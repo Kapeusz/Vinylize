@@ -8,6 +8,8 @@ defmodule Vinylize.Catalog do
 
   alias Vinylize.Catalog.Product
 
+  @topic inspect(__MODULE__)
+
   @doc """
   Returns the list of products.
 
@@ -18,7 +20,10 @@ defmodule Vinylize.Catalog do
 
   """
   def list_products do
-    Repo.all(Product)
+    Product
+    |> join(:inner, [p], c in assoc(p, :category))
+    |> preload([_, c], category: c)
+    |> Repo.all()
   end
 
   @doc """
@@ -53,6 +58,7 @@ defmodule Vinylize.Catalog do
     %Product{}
     |> Product.changeset(attrs)
     |> Repo.insert()
+    |> broadcast_change([:product, :created])
   end
 
   @doc """
@@ -201,5 +207,30 @@ defmodule Vinylize.Catalog do
   """
   def change_category(%Category{} = category, attrs \\ %{}) do
     Category.changeset(category, attrs)
+  end
+
+  @spec alphabetical(any) :: Ecto.Query.t()
+  def alphabetical(query) do
+    from c in query, order_by: c.name
+  end
+
+  @spec list_alphabetical_categories :: any
+  def list_alphabetical_categories do
+    Category
+    |> alphabetical()
+    |> Repo.all()
+  end
+
+  @doc """
+  Subscribe to updates to the product list.
+  """
+  def subscribe do
+    Phoenix.PubSub.subscribe(Vinylize.PubSub, @topic)
+  end
+
+  defp broadcast_change({:ok, result}, event) do
+    Phoenix.PubSub.broadcast(Vinylize.PubSub, @topic, {__MODULE__, event, result})
+
+    {:ok, result}
   end
 end
