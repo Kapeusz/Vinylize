@@ -14,6 +14,6 @@ defmodule Vinylize.Catalog.Category do
   def changeset(category, attrs) do
     category
     |> cast(attrs, [:name, :parent_id])
-    |> validate_required([:name, :parent_id])
+    |> validate_required([:name])
   end
 end

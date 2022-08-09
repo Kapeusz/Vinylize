@@ -6,7 +6,10 @@ defmodule VinylizeWeb.CategoryLive.Index do
 
   @impl true
   def mount(_params, _session, socket) do
-    {:ok, assign(socket, :categories, list_categories())}
+    categories = Catalog.list_alphabetical_categories()
+
+
+    {:ok, assign(socket, categories: categories)}
   end
 
   @impl true
@@ -42,5 +45,9 @@ defmodule VinylizeWeb.CategoryLive.Index do
 
   defp list_categories do
     Catalog.list_categories()
+  end
+
+  def parent_category_name(%Category{} = category) do
+    Catalog.get_parent_category_id(category)
   end
 end

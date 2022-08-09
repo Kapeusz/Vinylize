@@ -8,6 +8,7 @@
       title={@page_title}
       action={@live_action}
       category={@category}
+      categories={@categories}
       return_to={Routes.category_index_path(@socket, :index)}
     />
   </.modal>
@@ -26,7 +27,7 @@
     <%= for category <- @categories do %>
       <tr id={"category-#{category.id}"}>
         <td><%= category.name %></td>
-        <td><%= category.parent_id %></td>
+        <td><%= parent_category_name(category) %></td>
 
         <td>
           <span><%= live_redirect "Show", to: Routes.category_show_path(@socket, :show, category) %></span>

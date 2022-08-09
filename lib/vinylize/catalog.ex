@@ -40,7 +40,10 @@ defmodule Vinylize.Catalog do
       ** (Ecto.NoResultsError)
 
   """
-  def get_product!(id), do: Repo.get!(Product, id)
+  def get_product!(id) do
+    Repo.get!(Product, id)
+    |> Repo.preload(:category)
+  end
 
   @doc """
   Creates a product.
@@ -219,6 +222,20 @@ defmodule Vinylize.Catalog do
     Category
     |> alphabetical()
     |> Repo.all()
+  end
+
+  def get_parent_category_id(%Category{} = category) do
+    id = category.id
+    get_parent_category_name(id)
+  end
+
+  def get_parent_category_name(id) do
+    Repo.all(
+      from(c1 in "categories",
+      left_join: c2 in "categories",
+      on: c2.parent_id == c1.id,
+      select: c1.name,
+      where: ^id == c2.id))
   end
 
   @doc """
