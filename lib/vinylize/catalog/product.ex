@@ -20,6 +20,7 @@ defmodule Vinylize.Catalog.Product do
     product
     |> cast(attrs, [:name, :price, :sku, :is_seasonal, :image, :pack_size, :category_id])
     |> validate_required([:name, :price, :sku, :is_seasonal, :image, :pack_size, :category_id])
+    |> validate_number(:price, greater_than: 0)
     |> unique_constraint(:sku)
   end
 end

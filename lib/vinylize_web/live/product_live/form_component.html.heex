@@ -25,10 +25,6 @@
     <%= checkbox f, :is_seasonal %>
     <%= error_tag f, :is_seasonal %>
 
-    <%= label f, :image %>
-    <%= text_input f, :image %>
-    <%= error_tag f, :image %>
-
     <%= label f, :pack_size %>
     <%= number_input f, :pack_size %>
     <%= error_tag f, :pack_size %>
@@ -37,8 +33,46 @@
     <%= select f, :category_id, Enum.map(@categories, &{&1.name, &1.id}) %>
     <%= error_tag f, :category_id %>
 
+    <%= label f, :image %>
+    <div phx-drop-target="{ @uploads.image.ref }">
+      <%= live_file_input @uploads.image %>
+    </div>
+
     <div>
       <%= submit "Save", phx_disable_with: "Saving..." %>
     </div>
+
+
+  <p>Image uploaded</p>
+     <%= for entry <- @uploads.image.entries do %>
+      <div class="upload-entry">
+        <%# render in-flight progress using the reactive `entry.progress` %>
+        <progress value={entry.progress} class="upload-entry__progress" id={"#{entry.ref}-progress"} max="100"> <%= entry.progress %>% </progress>
+
+        <div class="upload-entry__details">
+          <%# live_img_preview/2 uses an internal hook to render a client-side image preview %>
+          <%= live_img_preview entry %>
+
+          <%# review the handle_event("cancel-upload") callback in the LiveView %>
+          <a href="#" phx-click="cancel-upload" phx-value-ref={entry.ref} class="upload-entry__cancel">&times;</a>
+        </div>
+
+      <%# upload_errors/2 returns error atoms per upload entry %>
+    <%= for err <- upload_errors(@uploads.image, entry) do %>
+      <p class="alert alert-danger"><%= friendly_error(err) %></p>
+    <% end %>
+
+      </div>
+
+    <% end %>
+
+
+
+
+
+
+  <p class="alert alert-info" role="alert"
+    phx-click="lv:clear-flash"
+    phx-value-key="info"><%= live_flash(@flash, :info) %></p>
   </.form>
 </div>

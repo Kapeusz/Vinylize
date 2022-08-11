@@ -13,6 +13,14 @@
   </.modal>
 <% end %>
 
+<article class="column">
+  <img
+  alt="product image" width="200" height="200"
+  src={Routes.static_path(
+  @socket,
+  @product.image || "/images/default-thumbnail.jpg")}>
+</article>
+
 <ul>
 
   <li>
@@ -33,11 +41,6 @@
   <li>
     <strong>Is seasonal:</strong>
     <%= @product.is_seasonal %>
-  </li>
-
-  <li>
-    <strong>Image:</strong>
-    <%= @product.image %>
   </li>
 
   <li>
